@@ -16,7 +16,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['name','email','password','phone_number','email_token']
+        fields = ['name','email','password','phone_number','email_token','profile_image']
 
     def create(self, validated_data):
         user = CustomUser.objects.create_user(
@@ -24,6 +24,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             phone_number=validated_data.get('phone_number'),
             email_token = str(uuid.uuid4()),
+            profile_image = validated_data.get('profile_image')
         )
         user.set_password(validated_data['password'])
         user.save()
