@@ -2,7 +2,7 @@
 <h1>API's</h1>
 <pre>
 Regstration:
-API: http://127.0.0.1:8000/register/
+API: http://127.0.0.1:8000/register/ [POST,GET]
 pass the data using form by using below keys
 Data stores like this:
     {
@@ -14,10 +14,9 @@ Data stores like this:
     }
 </pre>
 <br>
-<br>
 <pre>
 Login:
-API: http://127.0.0.1:8000/login/
+API: http://127.0.0.1:8000/login/ [POST]
 Data should pass like this:
 {
     "email":"22a51a42a0@adityatekkali.edu.in",
@@ -25,4 +24,32 @@ Data should pass like this:
 }
 </pre>
 <br>
+<pre>
+Logout:
+API: http://127.0.0.1:8000/logot/ [POST]
+just sent a post request to this api 
+</pre>
 <br>
+<pre>
+Resume storage:
+API: http://127.0.0.1:8000/resumestorage/ [POST,GET,DELETE]
+pass only resume using form by using below keys
+Data stores like this:
+    {
+        "id": 9,
+        "resume": "/media/resume/AR20_DAA_Lab20CAL303_Manual_Final_1_T2wQjk8.pdf",
+        "user": 7
+    }
+</pre>
+<br>
+<pre>
+Resume Score storage:
+API: http://127.0.0.1:8000/resumescorestorage/ [POST,GET,DELETE]
+pass only resume using form by using below keys
+Data stores like this:
+    {
+        "id": 9,
+        "resume": "Resume score",
+        "user": 7
+    }
+</pre>
