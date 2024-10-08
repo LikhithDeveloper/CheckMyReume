@@ -13,3 +13,16 @@ Data stores like this:
         "profile_image": "/media/profile/2_8SjRlRz.png"
     }
 </pre>
+<br>
+<br>
+<pre>
+Login:
+API: http://127.0.0.1:8000/login/
+Data should pass like this:
+{
+    "email":"22a51a42a0@adityatekkali.edu.in",
+    "password":"12345"
+}
+</pre>
+<br>
+<br>
