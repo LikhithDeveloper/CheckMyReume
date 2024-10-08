@@ -93,17 +93,14 @@ class ResumeStorageView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def get(self,request):
-        resume = ResumeStorage.objects.filter(user = request.user.id)
-        if resume:
+        if resume := ResumeStorage.objects.filter(user=request.user.id):
             serializer = ResumeStorageSerializer(resume,many = True)
             return Response(serializer.data,status=status.HTTP_200_OK)
         return Response({"message":"No resume found"}, status=status.HTTP_404_NOT_FOUND)
-    def delete(self,request):
+    def delete(self,request):  # sourcery skip: avoid-builtin-shadow
         item = request.data
         id = item.get('id')
-        # print(id)
-        resume = ResumeStorage.objects.get(id = id)
-        if resume:
+        if resume := ResumeStorage.objects.get(id=id):
             resume.delete()  # Delete the resume instance
             return Response({"message": "Resume deleted successfully"}, status=status.HTTP_200_OK)
         return Response({"message": "No resume found"}, status=status.HTTP_404_NOT_FOUND)
@@ -124,16 +121,14 @@ class ResumeScoreStorageView(APIView):
         return Response({"message":"Resume score not found"},status=status.HTTP_404_NOT_FOUND)
     
     def get(self,request):
-        score = ResumeScoreStorage.objects.filter(user = request.user.id)
-        if score:
+        if score := ResumeScoreStorage.objects.filter(user=request.user.id):
             serializer = ResumeScoreStorageSerializer(score,many=True)
             return Response(serializer.data,status=status.HTTP_200_OK)
         return Response({"message":"Scores not found"},status=status.HTTP_404_NOT_FOUND)
     
-    def delete(self,request):
+    def delete(self,request):  # sourcery skip: avoid-builtin-shadow
         id = request.data.get('id')
-        resume_score = ResumeScoreStorage.objects.get(id = id)
-        if resume_score:
+        if resume_score := ResumeScoreStorage.objects.get(id=id):
             resume_score.delete()
             return Response({"message":"deleted successfully"},status=status.HTTP_200_OK)
         return Response({"message":"Resume score not found"},status=status.HTTP_404_NOT_FOUND)
