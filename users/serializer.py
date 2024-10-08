@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser,ResumeStorage, ResumeScoreStorage
 from django.contrib.auth import get_user_model
 import uuid
 
@@ -33,3 +33,14 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.CharField()
     password = serializers.CharField() 
+
+
+class ResumeStorageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ResumeStorage
+        fields = '__all__'
+
+class ResumeScoreStorageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ResumeScoreStorage
+        fields = '__all__'

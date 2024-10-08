@@ -31,5 +31,8 @@ class ResumeStorage(models.Model):
 class ResumeScoreStorage(models.Model):
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     resume = models.CharField(max_length=100000,null=True,blank=True)
+
+    def __str__(self) -> str:
+        return self.user.name
      
     

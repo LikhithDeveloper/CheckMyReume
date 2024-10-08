@@ -12,10 +12,17 @@ from django.views.decorators.csrf import csrf_exempt
 # import uuid
 from .utils import *
 
+from rest_framework.authentication import SessionAuthentication
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    def enforce_csrf(self, request):
+        return  # To disable CSRF check
+
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
-    # parser_classes = [MultiPartParser, FormParser, JSONParser]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+    authentication_classes = [CsrfExemptSessionAuthentication]  # Use custom authentication
     def post(self,request):
         serializer = RegisterSerializer(data = request.data)
         serializer.is_valid(raise_exception=True)
@@ -33,6 +40,7 @@ class RegisterView(APIView):
 class LoginView(APIView):
 
     permission_classes = [AllowAny]
+    authentication_classes = [CsrfExemptSessionAuthentication]  # Use custom authentication
     def post(self,request):
         email = request.data['email']
         password = request.data['password']
@@ -54,6 +62,7 @@ class LoginView(APIView):
         })
     
 class LogoutView(APIView):
+    authentication_classes = [CsrfExemptSessionAuthentication]  # Use custom authentication
     @csrf_exempt  # Disable CSRF for this view (not recommended)
     def post(self,request):
         logout(request)
@@ -65,6 +74,38 @@ class ProtectedDataView(APIView):
     def get(self, request):
         data = {"message": "This is protected data accessible to authenticated users only."}
         return Response(data)
+    
+
+class ResumeStorageView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [CsrfExemptSessionAuthentication]  # Use custom authentication
+
+
+    @csrf_exempt
+    def post(self,request):
+        request.data['user'] = request.user.id
+        print(request.user.id)
+        serializer = ResumeStorageSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message":"Resume uploded succesfully"},status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self,request):
+        resume = ResumeStorage.objects.filter(user = request.user.id)
+        if resume:
+            serializer = ResumeStorageSerializer(resume,many = True)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response({"message":"No resume found"}, status=status.HTTP_404_NOT_FOUND)
+    def delete(self,request):
+        item = request.data
+        id = item.get('id')
+        print(id)
+        resume = ResumeStorage.objects.get(id = id)
+        if resume:
+            resume.delete()  # Delete the resume instance
+            return Response({"message": "Resume deleted successfully"}, status=status.HTTP_200_OK)
+        return Response({"message": "No resume found"}, status=status.HTTP_404_NOT_FOUND)
     
 
 def Verify(request,email_token):
