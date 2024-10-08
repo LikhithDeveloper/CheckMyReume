@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from users.views import RegisterView, LoginView,ProtectedDataView,Verify,LogoutView, ResumeStorageView
+from users.views import RegisterView, LoginView,ProtectedDataView,Verify,LogoutView, ResumeStorageView, ResumeScoreStorageView
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import (
@@ -34,6 +34,7 @@ urlpatterns = [
     path('logout/',LogoutView.as_view(),name='logout'),
     path('main/',ProtectedDataView.as_view(),name='main'),
     path('resumestorage/',ResumeStorageView.as_view(),name = 'resumestorage'),
+    path('resumescorestorage/',ResumeScoreStorageView.as_view(),name = 'resumescorestorage'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('verify/<str:email_token>/',Verify,name="Verify"),

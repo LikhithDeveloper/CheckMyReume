@@ -63,7 +63,7 @@ class LoginView(APIView):
     
 class LogoutView(APIView):
     authentication_classes = [CsrfExemptSessionAuthentication]  # Use custom authentication
-    @csrf_exempt  # Disable CSRF for this view (not recommended)
+    # @csrf_exempt  # Disable CSRF for this view (not recommended)
     def post(self,request):
         logout(request)
         return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
@@ -81,10 +81,10 @@ class ResumeStorageView(APIView):
     authentication_classes = [CsrfExemptSessionAuthentication]  # Use custom authentication
 
 
-    @csrf_exempt
+    # @csrf_exempt
     def post(self,request):
         request.data['user'] = request.user.id
-        print(request.user.id)
+        # print(request.user.id)
         serializer = ResumeStorageSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -100,13 +100,42 @@ class ResumeStorageView(APIView):
     def delete(self,request):
         item = request.data
         id = item.get('id')
-        print(id)
+        # print(id)
         resume = ResumeStorage.objects.get(id = id)
         if resume:
             resume.delete()  # Delete the resume instance
             return Response({"message": "Resume deleted successfully"}, status=status.HTTP_200_OK)
         return Response({"message": "No resume found"}, status=status.HTTP_404_NOT_FOUND)
     
+
+
+
+class ResumeScoreStorageView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [CsrfExemptSessionAuthentication]
+
+    def post(self,request):
+        request.data['user'] = request.user.id
+        serializer = ResumeScoreStorageSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response({"message":"Resume score not found"},status=status.HTTP_404_NOT_FOUND)
+    
+    def get(self,request):
+        score = ResumeScoreStorage.objects.filter(user = request.user.id)
+        if score:
+            serializer = ResumeScoreStorageSerializer(score,many=True)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response({"message":"Scores not found"},status=status.HTTP_404_NOT_FOUND)
+    
+    def delete(self,request):
+        id = request.data.get('id')
+        resume_score = ResumeScoreStorage.objects.get(id = id)
+        if resume_score:
+            resume_score.delete()
+            return Response({"message":"deleted successfully"},status=status.HTTP_200_OK)
+        return Response({"message":"Resume score not found"},status=status.HTTP_404_NOT_FOUND)
 
 def Verify(request,email_token):
     try:
